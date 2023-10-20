@@ -1,10 +1,10 @@
 package storage
 
 import (
-	"strings"
-
+	"log"
 	"ohurlshortener/core"
 	"ohurlshortener/utils"
+	"strings"
 
 	"github.com/btcsuite/btcd/btcutil/base58"
 )
@@ -46,8 +46,10 @@ func UpdateUser(user core.User) error {
 
 // FindUserByAccount 根据账号查找用户
 func FindUserByAccount(account string) (core.User, error) {
+	log.Println("FindUserByAccount")
 	var user core.User
 	query := `SELECT * FROM public.users u WHERE lower(u.account) = $1`
+	log.Println(query)
 	return user, DbGet(query, &user, strings.ToLower(account))
 }
 

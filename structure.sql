@@ -69,7 +69,7 @@ BEGIN
 	DELETE FROM public.stats_top25 WHERE 1=1;
 
 	-- insert fresh-new records
-	INSERT INTO public.stats_top25(short_url,today_count,d_today_count,stats_time)  
+	INSERT INTO public.stats_top25(short_url,today_count,d_today_count,stats_time)
 		SELECT l.short_url AS short_url, COUNT(l.ip) AS today_count ,COUNT(DISTINCT(l.ip)) AS d_today_count, NOW() AS stats_time
 		FROM public.access_logs l WHERE date(l.access_time) = date(NOW()) GROUP BY l.short_url ORDER BY today_count DESC LIMIT 25;
 END; 
@@ -83,7 +83,7 @@ CREATE TABLE public.stats_sum (
 );
 
 -- Insert pre-defined stats 
-INSERT INTO public.stats_sum (stats_key,stats_value) VALUES  
+INSERT INTO public.stats_sum (stats_key,stats_value) VALUES
 	('today_count',0), ('d_today_count',0),
 	('yesterday_count',0), ('d_yesterday_count',0),
 	('last_7_days_count',0), ('d_last_7_days_count',0),
@@ -115,7 +115,7 @@ BEGIN
 	SELECT COUNT(l.ip),COUNT(DISTINCT(l.ip)) INTO monthly_count,d_monthly_count 
 	FROM public.access_logs l WHERE DATE_PART('month', l.access_time) = DATE_PART('month',NOW());
 
-	UPDATE public.stats_sum SET stats_value = 
+	UPDATE public.stats_sum SET stats_value =
 	CASE
 		WHEN stats_key = 'today_count' THEN today_count
 		WHEN stats_key = 'd_today_count' THEN d_today_count
@@ -166,15 +166,15 @@ BEGIN
 			(SELECT count(ip) FROM public.access_logs WHERE date(access_time) = (NOW() - INTERVAL '1 day')::date AND short_url = u.short_url),
 			(SELECT count(DISTINCT(ip)) FROM public.access_logs WHERE date(access_time) = (NOW() - INTERVAL '1 day')::date AND short_url = u.short_url),
 			
-			(SELECT count(ip) FROM public.access_logs WHERE date(access_time) >= (NOW() - INTERVAL '7 day')::date AND short_url = u.short_url),	
+			(SELECT count(ip) FROM public.access_logs WHERE date(access_time) >= (NOW() - INTERVAL '7 day')::date AND short_url = u.short_url),
 			(SELECT count(DISTINCT(ip)) FROM public.access_logs WHERE date(access_time) >= (NOW() - INTERVAL '7 day')::date AND short_url = u.short_url),
 			
 			(SELECT count(ip) FROM public.access_logs WHERE DATE_PART('month',access_time) = DATE_PART('month',NOW()) AND short_url = u.short_url),
 			(SELECT count(DISTINCT(ip)) FROM public.access_logs WHERE DATE_PART('month',access_time) = DATE_PART('month',NOW()) AND short_url = u.short_url),
 			
 			(SELECT count(ip) FROM public.access_logs WHERE short_url = u.short_url),
-			(SELECT count(DISTINCT(ip)) FROM public.access_logs WHERE short_url = u.short_url)	
-		FROM public.short_urls u 
+			(SELECT count(DISTINCT(ip)) FROM public.access_logs WHERE short_url = u.short_url)
+		FROM public.short_urls u
 			LEFT JOIN public.access_logs l ON u.short_url = l.short_url
 		GROUP BY u.short_url;
 END;

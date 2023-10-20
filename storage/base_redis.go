@@ -50,7 +50,7 @@ func InitRedisService() (*RedisService, error) {
 			Addr:     utils.RedisConfig.Host,
 			DB:       utils.RedisConfig.Database,
 			Username: utils.RedisConfig.User,
-			Password: utils.RedisConfig.Password,
+			Password: "012#$%^789",
 			PoolSize: utils.RedisConfig.PoolSize,
 		})
 		_, err := redisClient.Ping(ctx).Result()

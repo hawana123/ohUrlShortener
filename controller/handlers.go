@@ -98,7 +98,7 @@ func AdminAuthHandler() gin.HandlerFunc {
 			return
 		}
 
-		found, err := service.GetUserByAccountFromRedis(user)
+		found, err := service.GetUserByAccountFromDb(user)
 		if err != nil {
 			c.Redirect(http.StatusFound, "/login")
 			c.Next()

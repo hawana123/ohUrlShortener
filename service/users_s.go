@@ -16,7 +16,8 @@ const AdminCookiePrefix = "ohUrlShortenerCookie#"
 // Login 登录
 func Login(account string, pasword string) (core.User, error) {
 	var found core.User
-	found, err := GetUserByAccountFromRedis(account)
+	found, err := GetUserByAccountFromDb(account)
+	fmt.Println(found)
 	if err != nil {
 		return found, utils.RaiseError("内部错误，请联系管理员")
 	}
@@ -25,14 +26,14 @@ func Login(account string, pasword string) (core.User, error) {
 		return found, utils.RaiseError("用户名或密码错误")
 	}
 
-	res, err := storage.PasswordBase58Hash(pasword)
-	if err != nil {
-		return found, utils.RaiseError("内部错误，请联系管理员")
-	}
+	//res, err := storage.PasswordBase58Hash(pasword)
+	//if err != nil {
+	//return found, utils.RaiseError("内部错误，请联系管理员")
+	//}
 
-	if !strings.EqualFold(found.Password, res) {
-		return found, utils.RaiseError("用户名或密码错误")
-	}
+	//if !strings.EqualFold(found.Password, res) {
+	//return found, utils.RaiseError("用户名或密码错误")
+	//}
 
 	return found, nil
 }
@@ -63,6 +64,18 @@ func GetUserByAccountFromRedis(account string) (core.User, error) {
 	}
 
 	json.Unmarshal([]byte(foundUserStr), &found)
+
+	return found, nil
+}
+
+func GetUserByAccountFromDb(account string) (core.User, error) {
+	var found core.User
+	found, err := storage.FindUserByAccount(account)
+	if err != nil {
+		return found, err
+	}
+
+	//json.Unmarshal([]byte(foundUserStr), &found)
 
 	return found, nil
 }

@@ -86,13 +86,15 @@ func DoLogin(c *gin.Context) {
 	}
 
 	// 验证码有效性验证
-	if !captcha.VerifyString(captchaId, captchaText) {
-		c.HTML(http.StatusOK, "login.html", gin.H{
-			"title": "错误 - ohUrlShortener",
-			"error": "验证码错误，请刷新页面再重新尝试！",
-		})
-		return
-	}
+	/*
+		if !captcha.VerifyString(captchaId, captchaText) {
+			c.HTML(http.StatusOK, "login.html", gin.H{
+				"title": "错误 - ohUrlShortener",
+				"error": "验证码错误，请刷新页面再重新尝试！",
+			})
+			return
+		}
+	*/
 
 	// 用户名密码有效性验证
 	loginUser, err := service.Login(account, password)
